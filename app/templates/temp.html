@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Path Finder</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="container mx-auto py-12">
+        <h1 class="text-4xl font-bold mb-8 text-center">Path Finder</h1>
+        <div class="w-full max-w-lg mx-auto bg-gray-200 text-black p-8 shadow-2xl rounded-lg">
+            <form method="post" enctype="multipart/form-data" id="emailForm">
+                {% csrf_token %}
+                <!-- form fields here -->
+                <!-- <div class="mb-6">
+                    {{ form.recipients.label_tag }} 
+                    <input type="text" name="{{ form.recipients.name }}" class="w-full px-3 py-2 border border-gray-900 rounded text-black">
+                </div> -->
+                <div class="mb-6">
+                    {{ form.topic.label_tag }} 
+                    <input type="text" name="{{ form.topic.name }}" class="w-full px-3 py-2 border border-gray-900 rounded text-black">
+                </div>
+                <div class="mb-6">
+                    {{ form.imagine.label_tag }} 
+                    <input type="text" name="{{ form.imagine.name }}" class="w-full px-3 py-2 border border-gray-900 rounded text-black">
+                </div>
+                <div>
+                    <button type="submit" id="submitButton" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Send Email
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="canvas"></div>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script>
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas').appendChild(renderer.domElement);
+
+        var geometry = new THREE.BoxGeometry(1, 1, 1);
+        var material = new THREE.MeshPhongMaterial({ color: 0x00ffff, emissive: 0x072534, side: THREE.DoubleSide, flatShading: true });
+        var cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        var light = new THREE.PointLight(0x00ffff, 1, 100);
+        light.position.set(0, 0, 2);
+        scene.add(light);
+
+        camera.position.z = 5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+
+        document.getElementById('emailForm').addEventListener('submit', function() {
+            var submitButton = document.getElementById('submitButton');
+            var canvas = document.getElementById('canvas');
+            submitButton.style.display = 'none';
+            canvas.style.display = 'block';
+            animate();
+        });
+    </script>
+</body>
+</html>
